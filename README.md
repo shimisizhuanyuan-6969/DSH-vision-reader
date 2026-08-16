@@ -5,6 +5,8 @@
 平时你用的可能是 DeepSeek 这类**纯文本模型**——它不会看图片，你贴一张截图它就说「当前模型没有视觉能力」。
 这个技能（skill）就是解决这个问题的：它在你需要看图的瞬间，悄悄调用**另一个会看图的模型**帮你读图，再把文字结果拿回来。你**不用切换模型**，也**不会污染对话历史**。
 
+> 📌 本仓库的安装脚本默认面向 **DSH（DeepSeek Harness）**；换成 Claude Code / Codex 等其他 Agent 也通用，只需改安装目录，见下方「适配其他 Agent」一节。
+
 ---
 
 ## 对专业人士（快速安装）
@@ -64,6 +66,31 @@ pwsh -File vision-reader/scripts/clip.ps1 "[question]"           # clipboard (Wi
 ```
 
 Config precedence: env vars `VISION_BASE_URL` / `VISION_MODEL` / `VISION_API_KEY` > `config.json` (`baseURL` / `model` / `apiKey`). See `vision-reader/SKILL.md`.
+
+---
+
+## 适配其他 Agent（Claude Code / Codex / …）
+
+**本仓库默认针对 DSH（DeepSeek Harness）**：`install.bat` / `install.ps1` 会把技能装进 `~/.agents/skills/`——那是 DSH 自己会扫描的目录（放进去、带上 `SKILL.md`，它自动发现，无需注册）。
+
+但**技能本体是通用的**：`SKILL.md`（一份给 AI 看的说明书）+ 两个脚本 + `config.json`，都不依赖任何特定工具。换一个 Agent，通常只是「复制到它的 skills 目录」这一件事。
+
+| Agent | 技能目录 |
+|---|---|
+| **DSH（DeepSeek Harness）** | `~/.agents/skills/`（本仓库默认） |
+| **Claude Code** | `~/.claude/skills/`（项目级也可放 `.claude/skills/`） |
+| **OpenAI Codex** | `~/.codex/skills/`（项目级也可放 `.codex/skills/`） |
+| 其他 | 查它文档里的「skills」目录，大多沿用 `SKILL.md` 这套格式 |
+
+**装到任意 Agent 的通用三步**（也就是「对小白 → 方式 B」的手动法）：
+
+1. 把 `vision-reader/` 文件夹整个复制到上表对应的目录；
+2. 把 `config.example.json` 复制一份改名为 `config.json`，填入你的 `baseURL` / `model` / `apiKey`；
+3. 重启那个 Agent（有些工具要重启才会重新扫描技能）。
+
+> ⚠️ 两点注意：
+> - `clip.ps1`（剪贴板方式）只支持 **Windows**；`see.mjs`（文件方式）Windows / macOS / Linux 都行。
+> - 不同工具对 `SKILL.md` 开头 frontmatter 的字段容忍度略有差异；本仓库只用了最通用的 `name` + `description`，主流工具都认。
 
 ---
 
