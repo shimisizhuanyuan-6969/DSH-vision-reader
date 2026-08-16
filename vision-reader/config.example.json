@@ -1,0 +1,5 @@
+{
+  "baseURL": "https://api.minimaxi.com/v1",
+  "model": "MiniMax-M3",
+  "apiKey": "在这里粘贴你的 API Key"
+}
